@@ -1,1 +1,1 @@
-# Reducing-the-Dimensionality-of-Data-with-Neural-Networks
+# Reducing the Dimensionality of Data with Neural Networks
