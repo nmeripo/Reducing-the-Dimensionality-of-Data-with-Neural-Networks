@@ -9,11 +9,11 @@ This repository contains Python scripts for reducing the dimensionality of data 
 - **RBM.py**: Implementation of a Restricted Boltzmann Machine (RBM) for dimensionality reduction.
 - **auto_encoder.py**: Implementation of an autoencoder for dimensionality reduction and data reconstruction.
 - **train_test_MNIST.py**: Training and Testing script for validating the implemented neural network models on MNIST dataset.
-- **utilsnn.py**: Utility functions for neural network operations, such as data preprocessing and model evaluation.
+- **utilsnn.py**: Utility functions for neural network operations, such as image preprocessing.
 
 ## Instructions
 
 To use the provided scripts:
 
 1. Make sure you have Python installed on your system.
-2. Install the required dependencies. You can do this by running:
+2. Install the required dependencies.
