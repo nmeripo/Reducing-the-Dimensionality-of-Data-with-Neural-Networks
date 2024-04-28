@@ -3,10 +3,17 @@ from utilsnn import xavier_init
 
 
 class AutoEncoder(object):
-    def __init__(self, input_size, layer_sizes, layer_names, symmetric_weights=False, optimizer=tf.train.AdamOptimizer(),
-                 transfer_function=tf.nn.sigmoid):
+    def __init__(
+        self,
+        input_size,
+        layer_sizes,
+        layer_names,
+        symmetric_weights=False,
+        optimizer=tf.train.AdamOptimizer(),
+        transfer_function=tf.nn.sigmoid,
+    ):
 
-        self.layer_names  = layer_names
+        self.layer_names = layer_names
         self.tied_weights = symmetric_weights
 
         # Build the encoding layers
@@ -23,7 +30,11 @@ class AutoEncoder(object):
             input_dim = int(next_layer_input.get_shape()[1])
 
             # Initialize W using xavier initialization
-            W = tf.get_variable(layer_names[i][0], [input_dim, dim], initializer=tf.contrib.layers.xavier_initializer())
+            W = tf.get_variable(
+                layer_names[i][0],
+                [input_dim, dim],
+                initializer=tf.contrib.layers.xavier_initializer(),
+            )
 
             # Initialize b to zero
             b = tf.Variable(tf.zeros([dim]), name=layer_names[i][1])
@@ -53,7 +64,13 @@ class AutoEncoder(object):
             if symmetric_weights:
                 W = tf.identity(tf.transpose(self.encoding_matrices[i]))
             else:
-                W = tf.Variable(xavier_init(self.encoding_matrices[i].get_shape()[1].value,self.encoding_matrices[i].get_shape()[0].value, transfer_function))
+                W = tf.Variable(
+                    xavier_init(
+                        self.encoding_matrices[i].get_shape()[1].value,
+                        self.encoding_matrices[i].get_shape()[0].value,
+                        transfer_function,
+                    )
+                )
             b = tf.Variable(tf.zeros([dim]))
             self.decoding_matrices.append(W)
             self.decoding_biases.append(b)
@@ -84,17 +101,23 @@ class AutoEncoder(object):
         return self.sess.run(self.reconstructed_x, feed_dict={self.x: X})
 
     def load_rbm_weights(self, path, layer_names, layer):
-        saver = tf.train.Saver({layer_names[0]: self.encoding_matrices[layer]},
-                               {layer_names[1]: self.encoding_biases[layer]})
+        saver = tf.train.Saver(
+            {layer_names[0]: self.encoding_matrices[layer]},
+            {layer_names[1]: self.encoding_biases[layer]},
+        )
         saver.restore(self.sess, path)
 
         if not self.tied_weights:
-            self.sess.run(self.decoding_matrices[layer].assign(tf.transpose(self.encoding_matrices[layer])))
+            self.sess.run(
+                self.decoding_matrices[layer].assign(
+                    tf.transpose(self.encoding_matrices[layer])
+                )
+            )
 
     def print_weights(self):
-        print('Matrices')
+        print("Matrices")
         for i in range(len(self.encoding_matrices)):
-            print('Matrice',i)
+            print("Matrice", i)
             print(self.encoding_matrices[i].eval(self.sess).shape)
             print(self.encoding_matrices[i].eval(self.sess))
             if not self.tied_weights:
@@ -102,7 +125,7 @@ class AutoEncoder(object):
                 print(self.decoding_matrices[i].eval(self.sess))
 
     def load_weights(self, path):
-        dict_w = self.get_dict_layer_names() 
+        dict_w = self.get_dict_layer_names()
         saver = tf.train.Saver(dict_w)
         saver.restore(self.sess, path)
 
@@ -117,8 +140,8 @@ class AutoEncoder(object):
             dict_w[self.layer_names[i][0]] = self.encoding_matrices[i]
             dict_w[self.layer_names[i][1]] = self.encoding_biases[i]
             if not self.tied_weights:
-                dict_w[self.layer_names[i][0]+'d'] = self.decoding_matrices[i]
-                dict_w[self.layer_names[i][1]+'d'] = self.decoding_biases[i]
+                dict_w[self.layer_names[i][0] + "d"] = self.decoding_matrices[i]
+                dict_w[self.layer_names[i][1] + "d"] = self.decoding_biases[i]
         return dict_w
 
     def partial_fit(self, X):
