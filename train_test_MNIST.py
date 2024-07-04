@@ -3,7 +3,7 @@ import tensorflow as tf
 from sklearn import preprocessing
 import matplotlib.pyplot as plt
 from RBM import RBM
-from au import AutoEncoder
+from auto_encoder import AutoEncoder
 from datetime import datetime
 
 
